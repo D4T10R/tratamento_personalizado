@@ -3,6 +3,8 @@ package entities;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import Exception.DomainException;
+
 public class Reservation {
     
     // ATRIBUTOS
@@ -13,10 +15,13 @@ public class Reservation {
     // CONSTRUTORES
     public  Reservation() {
     }
-    public Reservation(Integer roomNumber, Date checkin, Date checkout) {
+    public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
+        if (! checkOut.after(checkIn)) {
+            throw new DomainException("Erro in reservation: Check-out date must be after");
+        }
         this.roomNumber = roomNumber;
-        this.checkin = checkin;
-        this.checkout = checkout;
+        this.checkin = checkIn;
+        this.checkout = checkOut;
     }
 
     // ENCAPSULAMENTO
@@ -43,19 +48,19 @@ public class Reservation {
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     } 
 
-    public String updateDates(Date checkIn, Date checkOut) {
+    public void updateDates(Date checkIn, Date checkOut) {
         
         Date now = new Date();
         if ( checkIn.before(now) || checkOut.before(now)) {
-            return "Erro in reservation: reservation dates for update be future";
+            throw new DomainException("Erro in reservation: reservation dates for update be future");
         }
         else if (! checkOut.after(checkIn)) {
-            return "Erro in reservation: Check-out date must be after";
+            throw new DomainException("Erro in reservation: Check-out date must be after");
         }
 
         this.checkin = checkIn;
         this.checkout = checkOut;
-        return null;
+        
     }
 
     @Override

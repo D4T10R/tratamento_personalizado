@@ -5,29 +5,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+import Exception.DomainException;
 import entities.Reservation;
 
 public class Program {
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
         
         Scanner sc = new Scanner(System.in);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        System.out.print("Room number: ");
-        int number = sc.nextInt();
+        try {
+            System.out.print("Room number: ");
+            int number = sc.nextInt();
 
-        System.out.print("Check-in : ");
-        Date checkIn = sdf.parse(sc.next());
-        System.out.print("Check-out : ");
-        Date checkOut = sdf.parse(sc.next());
+            System.out.print("Check-in : ");
+            Date checkIn = sdf.parse(sc.next());
+            System.out.print("Check-out : ");
+            Date checkOut = sdf.parse(sc.next());
 
-        if (! checkOut.after(checkIn)) {
-
-            System.out.println("Erro in reservation: Check-out date must be after");
-
-        }  
-        else {
 
             Reservation reservation = new Reservation(number, checkIn, checkOut);
             System.out.println("Reservation: " + reservation);
@@ -36,21 +32,33 @@ public class Program {
             checkIn = sdf.parse(sc.next());
             System.out.print("Check-out : ");
             checkOut = sdf.parse(sc.next());
-
-           
-            String erro = reservation.updateDates(checkIn, checkOut);
-            if (erro != null) {
-                System.out.println(erro);
-            }
-            else {
-                System.out.println("Reservation: " + reservation);
-            }
-            
+    
+            reservation.updateDates(checkIn, checkOut);
+            System.out.println("Reservation: " + reservation);
         }
+        catch (ParseException e) {
+            System.out.println("Invalid date format");            
+        }
+        catch (DomainException e) {
+            System.out.println("Erro in reservationr" + e.getMessage());
+        }
+        catch (RuntimeException e) {
+            System.out.println("Unexpected erro!");
+        }
+        
+            
 
 
-        
-        
+
+
+
+
+
+
+
+
+
+
 
 
     }
